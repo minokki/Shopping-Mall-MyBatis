@@ -28,6 +28,7 @@
         <property name="dataSource" ref="datasource"></property>
       
     	</bean>   
+    	
     
            <mybatis-spring:scan base-package="com.mino.mapper"/>
     <context:component-scan base-package="com.mino.model"></context:component-scan>
