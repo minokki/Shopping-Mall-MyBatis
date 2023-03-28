@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mino.domain.MemberVO;
 import com.mino.service.MemberService;
@@ -44,6 +45,22 @@ public class MemberController {
 		
 		return "redirect:/";
 		
+	}
+	
+	//아이디 중복 체크
+	@PostMapping("/memberIdChk")
+	@ResponseBody
+	public String memberIdChk(String memberId) throws Exception{
+		log.info("아이디체크");
+		
+		int result = memberservice.memberIdChk(memberId);
+		
+		if(result != 0) {
+			return "fail"; //중복 아이디가 존재
+		}else {
+			return "success"; // 중복아이디가 없음
+		}
+	
 	}
 }
 	

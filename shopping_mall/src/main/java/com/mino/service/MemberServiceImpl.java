@@ -18,6 +18,12 @@ public class MemberServiceImpl implements MemberService{
 		
 		memberMapper.memberSign(member);
 	}
+
+	@Override
+	public int memberIdChk(String memberId) throws Exception {
+		
+		return memberMapper.memberIdChk(memberId);
+	}
 	
 
 }

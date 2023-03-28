@@ -11,4 +11,11 @@
 
 </insert>
 
+<!-- 아이디 중복체크 -->
+<select id="memberIdChk" resultType="int">
+
+select count(*) from shop_member where memberId = #{memberId};
+
+</select>
+
   </mapper>
