@@ -25,30 +25,38 @@
 				</div>
 				<span class="id_input_re_1">사용 가능한 아이디입니다.</span>
 				<span class="id_input_re_2">아이디가 이미 존재합니다.</span>
+				<span class="id_ck">아이디를 입력해주세요.</span>
 			</div>
 			<div class="pw_wrap">
 				<div class="pw_name">비밀번호</div>
 				<div class="pw_input_box">
 					<input class="pw_input" name="memberPw">
 				</div>
+				<span class="pw_ck">비밀번호를 입력해주세요.</span>
 			</div>
 			<div class="pwck_wrap">
 				<div class="pwck_name">비밀번호 확인</div>
 				<div class="pwck_input_box">
 					<input class="pwck_input">
 				</div>
+				<span class="pwck_input_re_1">비밀번호가 일치합니다.</span>
+                <span class="pwck_input_re_2">비밀번호가 일치하지 않습니다.</span>
+				<span class="pwck_ck">비밀번호 확인을 입력해주세요.</span>
 			</div>
 			<div class="user_wrap">
 				<div class="user_name">이름</div>
 				<div class="user_input_box">
 					<input class="user_input"name="memberName">
 				</div>
+				<span class="name_ck">이름을 입력해주세요.</span>
 			</div>
 			<div class="mail_wrap">
 				<div class="mail_name">이메일</div> 
 				<div class="mail_input_box">
 					<input class="mail_input" name="memberMail">
 				</div>
+				<span class="mail_ck">이메일을 입력해주세요.</span>
+				<sapn class="mail_input_box_warn"></sapn>
 				<div class="mail_check_wrap">
 					<div class="mail_check_input_box" id="mail_check_input_box_false">
 						<input class="mail_check_input" disabled="disabled">
@@ -80,6 +88,7 @@
 					<div class="address_input_3_box">
 						<input class="address_input_3" name="memberAddr3" readonly="readonly">
 					</div>
+					<span class="addr_ck">주소를 입력해주세요.</span>
 				</div>
 			</div>
 			<div class="sign_button_wrap">
@@ -91,48 +100,112 @@
 
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> <!-- 외부 스크립트 추가 ,주소록(통합로딩방식) -->
 <script>
+	/* 이메일 전송 인증번호 저장하기 위한코드 */
+	var code = ""; 
 	
-	var code = ""; //이메일 전송 인증번호 저장하기 위한코드
+	 /* 유효성 검사 통과유무 변수 false로 초기화 */
+	 var idCheck = false;            // 아이디
+	 var idckCheck = false;            // 아이디 중복 검사
+	 var pwCheck = false;            // 비번
+	 var pwckCheck = false;            // 비번 확인
+	 var pwckcorCheck = false;        // 비번 확인 일치 확인
+	 var nameCheck = false;            // 이름
+	 var mailCheck = false;            // 이메일
+	 var mailnumCheck = false;        // 이메일 인증번호 확인
+	 var addressCheck = false         // 주소
 
 $(document).ready(function() {
 	
 	//회원가입 버튼(버튼클릭시 /member/sign 맵핑으로 이동)
 	$(".sign_button").click(function () {
-		$("#sign_form").attr("action","/member/sign");
-		$("#sign_form").submit();
+		
+	     /* 입력값 변수 */
+        var id = $('.id_input').val();                 // id 입력란
+        var pw = $('.pw_input').val();                // 비밀번호 입력란
+        var pwck = $('.pwck_input').val();            // 비밀번호 확인 입력란
+        var name = $('.user_input').val();            // 이름 입력란
+        var mail = $('.mail_input').val();            // 이메일 입력란
+        var addr = $('.address_input_3').val();        // 주소 입력란
+        
+        //아이디 작성되었는지 유효성 검사
+        if(id == ""){
+        	$('.id_ck').css('display','block');
+        	idcheck =false;
+        }else{
+        	$('.id_ck').css('display','none');
+        	idCheck = true;
+        }
+        // 비밀번호 유효성 검사
+        if(pw == ""){
+            $('.pw_ck').css('display','block');
+            pwCheck = false;
+        }else{
+            $('.pw_ck').css('display', 'none');
+            pwCheck = true;
+        }
+        // 비밀번호 확인 유효성 검사
+        if(pwck == ""){
+            $('.pwck_ck').css('display','block');
+            pwckCheck = false;
+        }else{
+            $('.pwck_ck').css('display', 'none');
+            pwckCheck = true;
+        }  
+         // 이름 유효성 검사
+        if(name == ""){
+            $('.name_ck').css('display','block');
+              nameCheck = false;
+        }else{
+            $('.name_ck').css('display', 'none');
+            nameCheck = true; 
+        }
+        // 이메일 유효성 검사
+        if(mail == ""){
+            $('.mail_ck').css('display','block');
+            mailCheck = false;
+        }else{
+            $('.mail_ck').css('display', 'none');
+            mailCheck = true;
+        }
+        // 주소 유효성 검사
+        if(addr == ""){
+            $('.addr_ck').css('display','block');
+            addressCheck = false;
+        }else{
+            $('.addr_ck').css('display', 'none');
+            addressCheck = true;
+        }
+ 		
+        /* 최종 유효성 검사 */
+        if(idCheck&&idckCheck&&pwCheck&&pwckCheck&&pwckcorCheck&&nameCheck&&mailCheck&&mailnumCheck&&addressCheck ){
+        	$("#sign_form").attr("action","/member/sign");
+    		$("#sign_form").submit();
+        }  
+        return false;
+		
 		
 	});
 	
-	/* 아이디 중복검사 */
-	$('.id_input').on("propertychange change keyup paste input", function(){
-
-		var memberId = $('.id_input').val(); // id_input에 입력되는 값을 memberId에 저장
-		var data = {memberId : memberId} //컨트롤러에 넘길 데이터 이름 : 데이터 
-		
-		$.ajax({
-			type:"post",
-			url:"/member/memberIdChk", // 컨트롤러 맵핑되어있는 곳으로 보냄
-			data:data,
-			success : function (result) {
-			/* 	console.log("성공여부" + result); */
-				if(result != "fail"){
-					$('.id_input_re_1').css("display","inline-block");
-					$('.id_input_re_2').css("display","none");
-				}else{
-					$('.id_input_re_2').css("display","inline-block");
-					$('.id_input_re_1').css("display","none");
-				}
-			}
-		}); // ajax 종료
-
-	}); //중복검사 종료
-	
+});
 	/* 인증번호 이메일 전송 */
 	$(".mail_check_button").click(function(){
 	    
 	    var email = $(".mail_input").val();  //입력한 이메일
 	    var mailChcBox = $(".mail_check_input"); //인증번호 입력란
 	    var boxWrap= $(".mail_check_input_box"); //인증번호 입력란 박스
+	    var emailMsg = $(".mail_input_box_warn"); //이메일 입력 경고글
+	    
+	    if(mailFormCheck(email)){
+	    	emailMsg.html("이메일이 전송되었습니다. 이메일을 확인해주세요");
+	    	emailMsg.css("display","inline-block");
+	    	emailMsg.css("color","green");
+	    }else{
+	    	emailMsg.html("올바르지 못한 이메일 형식입니다.");
+	    	emailMsg.css("display","inline-block");
+	    	emailMsg.css("color","red");
+	    	return false;
+	    }
+	    
 	    $.ajax({
 	        
 	        type:"GET",
@@ -146,6 +219,7 @@ $(document).ready(function() {
 	        }
 	                
 	    });
+	});
 	    
 	  /* 인증번호 비교 */
 	   $(".mail_check_input").blur(function () {
@@ -155,14 +229,15 @@ $(document).ready(function() {
 		   if(inputCode == code){ //일치할경우
 			   checkResult.html("인증번호가 일치합니다");
 			   checkResult.attr("class", "correct"); //클래스에 correct추가
+			   mailnumCheck = true;     // 일치할 경우
 		   }else{  //일치하지 않을경우
 			   checkResult.html("인증번호를 다시 확인해주세요.");
 		        checkResult.attr("class", "incorrect");
+		        mailnumCheck = false;    // 일치하지 않을 경우
 		   }
 		
-	})
 	});
-});	
+
 	
 	/* 다음 주소api 연동 */
 	function daum_address() {
@@ -215,6 +290,55 @@ $(document).ready(function() {
 	            }
 	        }).open();
 }	 
+	
+	/* 비밀번호 확인 일치 유효성 */
+	$('.pwck_input').on("propertychange change keyup paste input", function(){
+		var pw = $('.pw_input').val();
+		var pwck = $('.pwck_input').val();
+		$('pwck_ck').css('display','none');
+		if(pw == pwck){
+			$('.pwck_input_re_1').css('display','block');
+	        $('.pwck_input_re_2').css('display','none');
+	        pwckcorCheck = true;
+		}else{
+			 $('.pwck_input_re_1').css('display','none');
+		        $('.pwck_input_re_2').css('display','block');
+		        pwckcorCheck = false;
+		}
+			
+	});
+	
+	/* 아이디 중복검사 */
+	$('.id_input').on("propertychange change keyup paste input", function(){
+
+		var memberId = $('.id_input').val(); // id_input에 입력되는 값을 memberId에 저장
+		var data = {memberId : memberId} //컨트롤러에 넘길 데이터 이름 : 데이터 
+		
+		$.ajax({
+			type:"post",
+			url:"/member/memberIdChk", // 컨트롤러 맵핑되어있는 곳으로 보냄
+			data:data,
+			success : function (result) {
+			/* 	console.log("성공여부" + result); */
+				if(result != "fail"){
+					$('.id_input_re_1').css("display","inline-block");
+					$('.id_input_re_2').css("display","none");
+					idckCheck = true;
+				}else{
+					$('.id_input_re_2').css("display","inline-block");
+					$('.id_input_re_1').css("display","none");
+					idckCheck = false;
+				}
+			}
+		}); // ajax 종료
+
+	}); //중복검사 종료
+	
+	/* 이메일 형식 유효성 */
+	function mailFormCheck(email) {
+		var form = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+		return form.test(email);
+	}
 		 
 
 </script>

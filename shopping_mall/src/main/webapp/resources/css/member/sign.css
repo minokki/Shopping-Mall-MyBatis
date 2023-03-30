@@ -279,3 +279,43 @@
 .incorrect{
     color : red;
 }
+
+/* 유효성 검사 문구 none */
+ 
+.id_ck{
+    display: none;
+    color: red;
+}
+.pw_ck{
+    display: none;
+    color: red;
+}
+.pwck_ck{
+    display: none;
+    color: red;
+}
+.name_ck{
+    display: none;
+    color: red;
+}
+.mail_ck{
+    display: none;
+    color: red;
+}
+.addr_ck{
+    display: none;
+    color: red;
+}
+
+
+ 
+/* 비밀번호 확인 일치 유효성검사 */
+.pwck_input_re_1{
+        color : green;
+        display : none;    
+}
+.pwck_input_re_2{
+        color : red;
+        display : none;    
+}  
+ 
