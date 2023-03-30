@@ -270,3 +270,12 @@
 #mail_check_input_box_true{
     background-color:white;
 }	
+
+
+/* 이메일 인증번호 일치확인  */
+.correct{
+    color : green;
+}
+.incorrect{
+    color : red;
+}
