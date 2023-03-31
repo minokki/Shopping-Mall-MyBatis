@@ -30,14 +30,14 @@
 			<div class="pw_wrap">
 				<div class="pw_name">비밀번호</div>
 				<div class="pw_input_box">
-					<input class="pw_input" name="memberPw">
+					<input class="pw_input" name="memberPw" type="password">
 				</div>
 				<span class="pw_ck">비밀번호를 입력해주세요.</span>
 			</div>
 			<div class="pwck_wrap">
 				<div class="pwck_name">비밀번호 확인</div>
 				<div class="pwck_input_box">
-					<input class="pwck_input">
+					<input class="pwck_input" type="password">
 				</div>
 				<span class="pwck_input_re_1">비밀번호가 일치합니다.</span>
                 <span class="pwck_input_re_2">비밀번호가 일치하지 않습니다.</span>

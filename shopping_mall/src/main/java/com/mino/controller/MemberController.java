@@ -164,7 +164,26 @@ public class MemberController {
         
     }
 	
+    //로그아웃
+    @GetMapping("/logout")
+    public String logOutGet(HttpServletRequest request) throws Exception{
+    	log.info("logout메서드 진입");
+    	HttpSession session = request.getSession();
+//    	session.removeAttribute(member) //특정 이름 세션객체를 삭제
+    	session.invalidate(); //세션 전체를 무효화 함
+    	return "redirect:/";
+    }
 	
+    //로그아웃
+    @PostMapping("/logout")
+    @ResponseBody
+    public String logOutPost(HttpServletRequest request) throws Exception{
+    	log.info("logout메서드 진입");
+    	HttpSession session = request.getSession();
+//    	session.removeAttribute(member) //특정 이름 세션객체를 삭제
+    	session.invalidate(); //세션 전체를 무효화 함
+    	return "redirect:/";
+    }
 	
 	
 }
