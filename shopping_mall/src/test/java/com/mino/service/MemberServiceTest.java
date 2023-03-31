@@ -35,12 +35,24 @@ public class MemberServiceTest {
 //	}
 	
 	//아이디 중복 체크 //중복있으면 1, 없으면 0
+//	@Test
+//	public void memgerIdChkTest() throws Exception{
+//		String id = "11"; 
+//		memberService.memberIdChk(id);
+//		
+//		log.info("cnt==" + memberService.memberIdChk(id));
+//	}
+	
 	@Test
-	public void memgerIdChkTest() throws Exception{
-		String id = "11"; 
-		memberService.memberIdChk(id);
+	public void memberLoginTest() throws Exception{
+		MemberVO member =new MemberVO();
 		
-		log.info("cnt==" + memberService.memberIdChk(id));
+		member.setMemberId("ika8354");
+		member.setMemberPw("1111");
+		
+		memberService.memberLogin(member);
+		
+		
 	}
 
 }

@@ -39,14 +39,24 @@ public class MemberMapperTest {
 //	}
 	
 	//중복 아이디 체크테스트 //중복있으면 1 없으면 0
+//	@Test
+//	public void memgerIdChkTest() {
+//		String memberId = "11";
+//		
+//		memberMapper.memberIdChk(memberId);
+//		
+//		log.info("cnt = "+memberMapper.memberIdChk(memberId));
+//		
+//	}
+	
+	//로그인
 	@Test
-	public void memgerIdChkTest() {
-		String memberId = "11";
-		
-		memberMapper.memberIdChk(memberId);
-		
-		log.info("cnt = "+memberMapper.memberIdChk(memberId));
-		
+	public void memberLogin() {
+		MemberVO member = new MemberVO();
+		member.setMemberId("ika8354");
+		member.setMemberPw("111");
+
+		memberMapper.memberLogin(member);
 	}
 
 }

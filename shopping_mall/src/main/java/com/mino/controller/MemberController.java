@@ -3,15 +3,20 @@ package com.mino.controller;
 import java.util.Random;
 
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mino.domain.MemberVO;
 import com.mino.service.MemberService;
@@ -28,18 +33,52 @@ public class MemberController {
 	
 	@Autowired
 	private JavaMailSender mailSender;
+	
+	@Autowired
+	private BCryptPasswordEncoder pwBCryptPasswordEncoder;
 
 	//로그인 페이지 이동
 	@GetMapping("/login")
-	public void joinGET() {
+	public void loginGET() {
 		
-		log.info("로그인 페이지 진입");
+//		log.info("로그인 페이지 진입");
+		
+	}
+	@PostMapping("/login")
+	public String loginPost(HttpServletRequest request, MemberVO member, RedirectAttributes ra) throws Exception{
+		
+//		System.out.println("login 메서드 진입");
+//		System.out.println("데이터=" + member);
+		HttpSession session = request.getSession();
+		String pw = "";
+		String encodePw="";
+		MemberVO loginVo = memberservice.memberLogin(member);
+		
+		if(loginVo != null) {  //일치하는 아이디가 있을시
+			pw=member.getMemberPw();  //memeber에 담긴 비밀번호 pw 저장
+			encodePw=loginVo.getMemberPw(); //db에 저장되있는 인코딩된 비밀번호 저장
+			
+			if(true == pwBCryptPasswordEncoder.matches(pw, encodePw)){ //인코딩된 비밀번호 확인하려면 matches를 이용하여 확인해야함.
+				loginVo.setMemberPw(""); // session에 사용자 정보를 저장하기전 인코딩된 비밀번호 정보 지움
+				session.setAttribute("member", loginVo); //로그인정보를 member에 담는다. 
+				return "redirect:/"; 
+			}else {
+				ra.addFlashAttribute("result", 0);            
+                return "redirect:/member/login";    // 로그인 페이지로 이동
+			}
+			
+			
+		}else {    //일치하는 아이디가 없을시
+		
+			ra.addFlashAttribute("result",0);
+			return "redirect:/member/login";  //로그인실패 ,로그인페이지로 이동
+		}
 		
 	}
 	
 	//회원가입 페이지 이동
 	@GetMapping("/sign")
-	public void loginGET() {
+	public void signGET() {
 		
 		log.info("회원가입 페이지 진입");
 		
@@ -47,8 +86,15 @@ public class MemberController {
 	
 	//회원가입
 	@PostMapping("/sign")
-	public String joinPOST(MemberVO member) throws Exception{
+	public String signPOST(MemberVO member) throws Exception{
 
+		String pw= "";
+		String encodePw="";
+		
+		pw = member.getMemberPw(); //member객체에 담긴 비밀번호를 pw에 저장
+		encodePw = pwBCryptPasswordEncoder.encode(pw);  //pw에 저장된 비밀번호를 인코딩
+		member.setMemberPw(encodePw); //member객체에 인코딩된 비밀번호 저장.
+		
 		memberservice.memberSign(member);
 		
 		return "redirect:/";
@@ -100,23 +146,13 @@ public class MemberController {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
             // true는 멀티파트 메세지를 사용하겠다는 의미
-            
-            /*
-             * 단순한 텍스트 메세지만 사용시엔 아래의 코드도 사용 가능 
-             * MimeMessageHelper mailHelper = new MimeMessageHelper(mail,"UTF-8");
-             */
             helper.setFrom(setFrom);
             // 빈에 아이디 설정한 것은 단순히 smtp 인증을 받기 위해 사용 따라서 보내는이(setFrom())반드시 필요
-            // 보내는이와 메일주소를 수신하는이가 볼때 모두 표기 되게 원하신다면 아래의 코드를 사용하시면 됩니다.
+            // 보내는이와 메일주소를 수신하는이가 볼때 모두 표기 되게 원하신다면 아래의 코드를 사용하면됨.
             //mailHelper.setFrom("보내는이 이름 <보내는이 아이디@도메인주소>");
             helper.setTo(toMail);
             helper.setSubject(title);
-            helper.setText(content,true);
-            
-            // true는 html을 사용하겠다는 의미입니다.
-            /*
-             * 단순한 텍스트만 사용하신다면 다음의 코드를 사용하셔도 됩니다. mailHelper.setText(content);
-             */
+            helper.setText(content,true);   
             mailSender.send(message);
             
         }catch(Exception e) {
