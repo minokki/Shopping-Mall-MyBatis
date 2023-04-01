@@ -120,15 +120,15 @@
                    		
                    			<div class="btn_section">
                    				<button id="cancelBtn" class="btn">상품 목록</button>
-	                    		<button id="enrollBtn" class="btn enroll_btn">수정 </button>
+	                    		<button id="modifyBtn" class="btn enroll_btn">수정 </button>
 	                    	</div> 
                     </div>      
 
                 	
                 	<form id="moveForm" action="/admin/shopList" method="get" >
- 						<input type="hidden" name="pageNum" value="${pageMaker.page.pageNum}">
-						<input type="hidden" name="amount" value="${pageMaker.page.amount}">
-						<input type="hidden" name="keyword" value="${pageMaker.page.keyword}">
+ 						<input type="hidden" name="pageNum" value="${page.pageNum}">
+						<input type="hidden" name="amount" value="${page.amount}">
+						<input type="hidden" name="keyword" value="${page.keyword}">
                 	</form>
                 	
                 </div>
@@ -140,116 +140,132 @@
 			//할인율 값 삽입하기
 			let itemDiscount = '<c:out value= "${viewInfo.itemDiscount}"/>' *100;
 			$("#discount_interface").attr("value",itemDiscount);
-		
-		});
-		
-		/* 물품 소개 */
-		ClassicEditor
-			.create(document.querySelector('#itemIntro_textarea'))
+			
+			/* 물품 소개 */
+			ClassicEditor
+				.create(document.querySelector('#itemIntro_textarea'))
+				.then(editor => {
+						console.log(editor);
+						editor.isReadOnly = true;
+					})
+				.catch(error=>{
+					console.error(error);
+				});
+				
+			/* 물품 목차 */	
+			ClassicEditor
+			.create(document.querySelector('#itemContents_textarea'))
 			.then(editor => {
-					console.log(editor);
-					editor.isReadOnly = true;
-				})
+						console.log(editor);
+						editor.isReadOnly = true;
+					})
 			.catch(error=>{
 				console.error(error);
+			});		
+		
+			/* 카테고리 */
+			let cateList = JSON.parse('${cateList}');
+
+			let cate1Array = new Array();
+			let cate2Array = new Array();
+			let cate3Array = new Array();
+			let cate1Obj = new Object();
+			let cate2Obj = new Object();
+			let cate3Obj = new Object();
+			
+			let cateSelect1 = $(".cate1");		
+			let cateSelect2 = $(".cate2");
+			let cateSelect3 = $(".cate3");
+			
+			/* 카테고리 배열 초기화 메서드 */
+			function makeCateArray(obj,array,cateList, tier){
+				for(let i = 0; i < cateList.length; i++){
+					if(cateList[i].tier === tier){
+						obj = new Object();
+						
+						obj.cateName = cateList[i].cateName;
+						obj.cateCode = cateList[i].cateCode;
+						obj.cateParent = cateList[i].cateParent;
+						
+						array.push(obj);				
+						
+					}
+				}
+			}	
+			
+			/* 배열 초기화 */
+			makeCateArray(cate1Obj,cate1Array,cateList,1);
+			makeCateArray(cate2Obj,cate2Array,cateList,2);
+			makeCateArray(cate3Obj,cate3Array,cateList,3);
+			
+			
+			let targetCate2 = '';
+			let targetCate3 = '${viewInfo.cateCode}';
+			
+			for(let i = 0; i < cate3Array.length; i++){
+				if(targetCate3 === cate3Array[i].cateCode){
+					targetCate3 = cate3Array[i];
+				}
+			}// for			
+			
+			for(let i = 0; i < cate3Array.length; i++){
+				if(targetCate3.cateParent === cate3Array[i].cateParent){
+					cateSelect3.append("<option value='"+cate3Array[i].cateCode+"'>" + cate3Array[i].cateName + "</option>");
+				}
+			}				
+			
+			$(".cate3 option").each(function(i,obj){
+				if(targetCate3.cateCode === obj.value){
+					$(obj).attr("selected", "selected");
+				}
+			});			
+			
+			for(let i = 0; i < cate2Array.length; i++){
+				if(targetCate3.cateParent === cate2Array[i].cateCode){
+					targetCate2 = cate2Array[i];	
+				}
+			}// for		
+			
+			for(let i = 0; i < cate2Array.length; i++){
+				if(targetCate2.cateParent === cate2Array[i].cateParent){
+					cateSelect2.append("<option value='"+cate2Array[i].cateCode+"'>" + cate2Array[i].cateName + "</option>");
+				}
+			}		
+			
+			$(".cate2 option").each(function(i,obj){
+				if(targetCate2.cateCode === obj.value){
+					$(obj).attr("selected", "selected");
+				}
+			});				
+			
+			
+			
+			for(let i = 0; i < cate1Array.length; i++){
+				cateSelect1.append("<option value='"+cate1Array[i].cateCode+"'>" + cate1Array[i].cateName + "</option>");
+			}	
+			
+			$(".cate1 option").each(function(i,obj){
+				if(targetCate2.cateParent === obj.value){
+					$(obj).attr("selected", "selected");
+				}
 			});
 			
-		/* 물품 목차 */	
-		ClassicEditor
-		.create(document.querySelector('#itemContents_textarea'))
-		.then(editor => {
-					console.log(editor);
-					editor.isReadOnly = true;
-				})
-		.catch(error=>{
-			console.error(error);
-		});		
-	
-		/* 카테고리 */
-		let cateList = JSON.parse('${cateList}');
-
-		let cate1Array = new Array();
-		let cate2Array = new Array();
-		let cate3Array = new Array();
-		let cate1Obj = new Object();
-		let cate2Obj = new Object();
-		let cate3Obj = new Object();
-		
-		let cateSelect1 = $(".cate1");		
-		let cateSelect2 = $(".cate2");
-		let cateSelect3 = $(".cate3");
-		
-		/* 카테고리 배열 초기화 메서드 */
-		function makeCateArray(obj,array,cateList, tier){
-			for(let i = 0; i < cateList.length; i++){
-				if(cateList[i].tier === tier){
-					obj = new Object();
-					
-					obj.cateName = cateList[i].cateName;
-					obj.cateCode = cateList[i].cateCode;
-					obj.cateParent = cateList[i].cateParent;
-					
-					array.push(obj);				
-					
-				}
-			}
-		}	
-		
-		/* 배열 초기화 */
-		makeCateArray(cate1Obj,cate1Array,cateList,1);
-		makeCateArray(cate2Obj,cate2Array,cateList,2);
-		makeCateArray(cate3Obj,cate3Array,cateList,3);
-		
-		
-		let targetCate2 = '';
-		let targetCate3 = '${viewInfo.cateCode}';
-		
-		for(let i = 0; i < cate3Array.length; i++){
-			if(targetCate3 === cate3Array[i].cateCode){
-				targetCate3 = cate3Array[i];
-			}
-		}// for			
-		
-		for(let i = 0; i < cate3Array.length; i++){
-			if(targetCate3.cateParent === cate3Array[i].cateParent){
-				cateSelect3.append("<option value='"+cate3Array[i].cateCode+"'>" + cate3Array[i].cateName + "</option>");
-			}
-		}				
-		
-		$(".cate3 option").each(function(i,obj){
-			if(targetCate3.cateCode === obj.value){
-				$(obj).attr("selected", "selected");
-			}
-		});			
-		
-		for(let i = 0; i < cate2Array.length; i++){
-			if(targetCate3.cateParent === cate2Array[i].cateCode){
-				targetCate2 = cate2Array[i];	
-			}
-		}// for		
-		
-		for(let i = 0; i < cate2Array.length; i++){
-			if(targetCate2.cateParent === cate2Array[i].cateParent){
-				cateSelect2.append("<option value='"+cate2Array[i].cateCode+"'>" + cate2Array[i].cateName + "</option>");
-			}
-		}		
-		
-		$(".cate2 option").each(function(i,obj){
-			if(targetCate2.cateCode === obj.value){
-				$(obj).attr("selected", "selected");
-			}
-		});				
+			
+		});
 		
 		
 		
-		for(let i = 0; i < cate1Array.length; i++){
-			cateSelect1.append("<option value='"+cate1Array[i].cateCode+"'>" + cate1Array[i].cateName + "</option>");
-		}	
+		$("#cancelBtn").on("click",function(e){
+			e.preventDefault();  //페이지 이동 중단
+			$("#moveForm").submit();
+		});
 		
-		$(".cate1 option").each(function(i,obj){
-			if(targetCate2.cateParent === obj.value){
-				$(obj).attr("selected", "selected");
-			}
+		$("#modifyBtn").on("click",function(e){
+			e.preventDefault();
+			let newInput = '<input type="hidden" name="itemId" value="${viewInfo.itemId}">';
+			$("#moveForm").append(newInput);
+			$("#moveForm").attr("action","/admin/modify");
+			$("#moveForm").submit();
 		});
 		
 	</script>

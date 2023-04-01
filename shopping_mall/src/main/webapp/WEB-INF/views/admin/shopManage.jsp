@@ -320,10 +320,6 @@ $(document).ready(function(){
 	cateArray(cate2Obj,cate2Array,cateList,2);
 	cateArray(cate3Obj,cate3Array,cateList,3);
 	
-	//대분류 추가 
-	for(let i = 0; i < cate1Array.length; i++){
-		cateSelect1.append("<option value='"+cate1Array[i].cateCode+"'>" + cate1Array[i].cateName + "</option>");
-	}
 	//중분류 추가
 	$(cateSelect1).on("change",function(){
 		let selectVal1 = $(this).find("option:selected").val();	
@@ -390,7 +386,7 @@ $(document).ready(function(){
 	
 		}
 		
-	})
+	});
 	
 
 </script> 	

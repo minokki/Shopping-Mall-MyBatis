@@ -72,7 +72,7 @@ public class AdminController {
     	
     }
     
-  @GetMapping("/view")
+  @GetMapping({"/view" , "/modify"})  //맵핑 배열로 할수 있음.
   public void shopViewGet(int itemId, Paging page, Model model) throws JsonProcessingException {
 	  log.info("뷰 진입");
 	  ObjectMapper mapper = new ObjectMapper();
@@ -83,6 +83,25 @@ public class AdminController {
 	  model.addAttribute("page", page);
 	  //조회 페이지 정보
 	  model.addAttribute("viewInfo",adminService.shopView(itemId));
+  }
+  
+  @PostMapping("/modify")
+  public String shopModifyPost(ItemVO item,  RedirectAttributes ra) throws Exception{
+	  int result = adminService.shopModify(item);
+	  
+	  ra.addFlashAttribute("modify_result",result);
+	  
+	  return "redirect:/admin/shopList";
+  }
+  
+  @PostMapping("/delete")
+  public String shopDelete(int itemId, RedirectAttributes ra) throws Exception{
+	  int result = adminService.shopDelete(itemId);
+	  
+	  ra.addFlashAttribute("delete_result",result);
+	  
+	  return "redirect:/admin/shopList";
+	  
   }
     
 }

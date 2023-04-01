@@ -154,6 +154,21 @@
   	
   	
   });
+  
+  /* 수정 성공 메세지 */
+	let modify_result = '${modify_result}';
+	
+	if(modify_result == 1){
+		alert("수정 완료");
+	}
+	
+	/* 삭제 결과 메세지 */
+	let delete_result = '${delete_result}';
+	
+	if(delete_result == 1){
+		alert("삭제 완료");
+	}
+	
   </script>
 </body>
 </html>

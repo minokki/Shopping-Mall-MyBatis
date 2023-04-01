@@ -22,4 +22,10 @@ public interface AdminMapper {
 	
 	//상품 조회
 	public ItemVO shopView(int itemId);
+	
+	//상품 수정
+	public int shopModify(ItemVO item);
+	
+	//상품 삭제
+	public int shopDelete(int itemId);
 }

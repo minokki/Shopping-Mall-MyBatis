@@ -47,8 +47,22 @@ select  itemId, itemName,  b.cateName, itemStock, a.regDate
 
 <select id="shopView" resultType="com.mino.domain.ItemVO">
 
-select * from shop_item where itemId=#{itemId};
+select * from shop_item where itemId=#{itemId}
 
 </select>
+
+<update id="shopModify">
+
+UPDATE shop_item set itemName=#{itemName}, cateCode=#{cateCode}, itemPrice=#{itemPrice},itemStock=#{itemStock},itemDiscount=#{itemDiscount},
+itemIntro=#{itemIntro},itemContents=#{itemContents} where itemId = #{itemId}
+
+</update>
+
+<delete id="shopDelete">
+
+delete from shop_item where itemId=#{itemId}
+
+</delete>
+
 
   </mapper>

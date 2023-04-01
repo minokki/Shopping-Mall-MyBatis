@@ -21,5 +21,11 @@ public interface AdminService {
 	
 	//상품 정보 보기
 	public ItemVO shopView(int itemId);
+	
+	//상품 수정
+	public int shopModify(ItemVO item);
+	
+	//상품 삭제
+	public int shopDelete(int itemId);
 
 }

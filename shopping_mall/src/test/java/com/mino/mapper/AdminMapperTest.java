@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.mino.domain.ItemVO;
 import com.mino.domain.Paging;
 
 import lombok.extern.log4j.Log4j;
@@ -62,11 +63,36 @@ public class AdminMapperTest {
 //		
 //	}
 	
+//	@Test
+//	public void shopViewTest() {
+//		int itemId = 300;
+//		
+//		log.info("검색결과="+adminMapper.shopView(itemId));
+//	}
+	
+//	@Test
+//	public void shopModifyTest() {
+//		ItemVO item =new ItemVO();
+//		
+//		item.setItemId(9);
+//		item.setItemName("222");
+//		item.setCateCode("101002");
+//		item.setItemPrice(3000);
+//		item.setItemStock(50);
+//		item.setItemDiscount(0.5);
+//		item.setItemIntro("fffff");
+//		item.setItemContents("dddddd");
+//		
+//		adminMapper.shopModify(item);
+//		
+//	}
+	
 	@Test
-	public void shopViewTest() {
-		int itemId = 300;
+	public void shopDeleteTest() {
+		int item = 10;
 		
-		log.info("검색결과="+adminMapper.shopView(itemId));
+		adminMapper.shopDelete(item);
+		
 	}
 	
 	

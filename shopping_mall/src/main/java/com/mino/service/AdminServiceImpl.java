@@ -52,4 +52,16 @@ public class AdminServiceImpl implements AdminService{
 		return adminMapper.shopView(itemId);
 	}
 
+	@Override
+	public int shopModify(ItemVO item) {
+		
+		return adminMapper.shopModify(item);
+	}
+
+	@Override
+	public int shopDelete(int itemId) {
+		
+		return adminMapper.shopDelete(itemId);
+	}
+
 }
