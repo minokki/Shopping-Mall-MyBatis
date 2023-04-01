@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mino.domain.CateVO;
+import com.mino.domain.ImageVO;
 import com.mino.domain.ItemVO;
 import com.mino.domain.Paging;
 import com.mino.mapper.AdminMapper;
@@ -19,11 +21,23 @@ public class AdminServiceImpl implements AdminService{
 	@Autowired
 	private AdminMapper adminMapper;
 
+	@Transactional
 	@Override
-	public void itemEnroll(ItemVO item) {
+	public void itemInsert(ItemVO item) {
 		
 		log.info("service=itemEnroll");
-		adminMapper.itemEnroll(item);
+		adminMapper.itemInsert(item);
+	
+		
+		if(item.getImageList() == null || item.getImageList().size() <= 0) {
+			return;
+		}
+		//이미지 db에 저장 , item에 저장되어있는 itemId꺼내오기
+		for(ImageVO img : item.getImageList()) {
+			img.setItemId(item.getItemId());
+			
+			adminMapper.imgInsert(img);
+		}
 	}
 
 	@Override
@@ -52,16 +66,42 @@ public class AdminServiceImpl implements AdminService{
 		return adminMapper.shopView(itemId);
 	}
 
+	@Transactional //두개이상의 쿼리 사용 하였기 때문에 트랜젝션 사용
 	@Override
 	public int shopModify(ItemVO item) {
 		
-		return adminMapper.shopModify(item);
+		int result = adminMapper.shopModify(item);
+		
+		if(result == 1 && item.getImageList() !=null && item.getImageList().size() > 0) {
+			adminMapper.deleteImageAll(item.getItemId());
+			
+			for(ImageVO img : item.getImageList()) {
+				img.setItemId(item.getItemId());
+				adminMapper.imgInsert(img);
+			}
+		}else if(item.getImageList() ==null ){   //수정시 이미지 삭제 하면 
+			adminMapper.deleteImageAll(item.getItemId());
+		}
+		System.out.println("item===="+item.getImageList());
+		System.out.println("item===="+item.getItemId());
+		
+		return result;
 	}
-
+	@Transactional
 	@Override
 	public int shopDelete(int itemId) {
 		
+		adminMapper.deleteImageAll(itemId);
+		
 		return adminMapper.shopDelete(itemId);
 	}
+
+	@Override
+	public List<ImageVO> getImageInfo(int itemId) {
+		
+		return adminMapper.getImageInfo(itemId);
+	}
+
+
 
 }

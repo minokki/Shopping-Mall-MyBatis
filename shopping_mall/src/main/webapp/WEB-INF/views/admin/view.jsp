@@ -15,6 +15,16 @@
   
   <script src="https://cdn.ckeditor.com/ckeditor5/26.0.0/classic/ckeditor.js"></script> <!--ckeditor5  -->
   
+  <style type="text/css">
+	#result_card img{
+		max-width: 100%;
+	    height: auto;
+	    display: block;
+	    padding: 5px;
+	    margin-top: 10px;
+	    margin: auto;	
+	}
+</style>
 
 <title>Insert title here</title>
 </head>
@@ -118,6 +128,18 @@
                     			</div>
                     		</div>
                    		
+                   		<div class="form_section">
+                    			<div class="form_section_title">
+                    				<label>상품 이미지</label>
+                    			</div>
+                    			<div class="form_section_content">
+
+									<div id="uploadResult">
+																		
+									</div>
+                    			</div>
+                    		</div>
+                   		
                    			<div class="btn_section">
                    				<button id="cancelBtn" class="btn">상품 목록</button>
 	                    		<button id="modifyBtn" class="btn enroll_btn">수정 </button>
@@ -140,6 +162,37 @@
 			//할인율 값 삽입하기
 			let itemDiscount = '<c:out value= "${viewInfo.itemDiscount}"/>' *100;
 			$("#discount_interface").attr("value",itemDiscount);
+			
+			/* 이미지 정보 호출 */
+			let itemId = '<c:out value="${viewInfo.itemId}"/>';
+			let uploadResult = $("#uploadResult");
+			
+			//getJSON(url[,data][,success]); get 방식으로 서버로부터 json으로 인코딩된 데이터를 받을때 사용
+			$.getJSON("/getImageList", {itemId : itemId},function(arr){
+					
+					if(arr.length === 0){	
+						let str = "";
+						str += "<div id='result_card'>";
+						str += "<img src='/resources/img/noimg.JPG'>";
+						str += "</div>";
+						
+						uploadResult.html(str);	
+						
+						return;
+					}	
+					
+					let str = "";
+					let obj = arr[0];
+					
+					let filePath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+					str += "<div id='result_card'";
+					str += "data-path='" + obj.uploadPath + "' data-uuid='" + obj.uuid + "' data-filename='" + obj.fileName + "'";
+					str += ">";
+					str += "<img src='/displayImg?fileName=" + filePath +"'>";
+					str += "</div>";	
+					
+					uploadResult.html(str);
+			});
 			
 			/* 물품 소개 */
 			ClassicEditor

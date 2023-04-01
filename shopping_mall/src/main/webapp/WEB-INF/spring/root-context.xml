@@ -3,9 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
 		
@@ -29,10 +33,19 @@
       
     	</bean>   
     	
+    	<!-- 트랜잭셔널 사용 하기위한 빈설정 -->
+    	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="datasource"></property>
+		</bean>
+		<tx:annotation-driven />  <!-- 트랜잭션 어노테이션 사용 -->
     
            <mybatis-spring:scan base-package="com.mino.mapper"/>
-    <context:component-scan base-package="com.mino.model"></context:component-scan>
-    <context:component-scan base-package="com.mino.service"></context:component-scan>
+	    <context:component-scan base-package="com.mino.model"></context:component-scan>
+	    <context:component-scan base-package="com.mino.service"></context:component-scan>
+	    
+	    <task:annotation-driven/> <!-- task어노테이션 사용 -->
+	    
+		<context:component-scan base-package="com.mino.task"></context:component-scan>
     
      <!-- navermail설정 -->
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> 

@@ -102,6 +102,17 @@
                     				<span class="ck_warn itemContents_warn">물품 목차를 입력해주세요.</span>
                     			</div>
                     		</div>
+                    		<div class="form_section">
+                    			<div class="form_section_title">
+                    				<label>상품 이미지</label>
+                    			</div>
+                    			<div class="form_section_content">
+									<input type="file" id ="fileItem" name='uploadFile' style="height: 30px;">
+									<div id="uploadResult">
+																		
+									</div>									
+                    			</div>
+                    		</div>
                     		<input type="hidden" name='itemId' value="${viewInfo.itemId}">
                    		</form>
                    			<div class="btn_section">
@@ -123,6 +134,146 @@
 
 <script> <!-- 페이지 랜더링시 작동되는 코드 -->
 	$(document).ready(function(){
+		
+		/* 이미지 정보 호출 */
+		let itemId = '<c:out value="${viewInfo.itemId}"/>';
+		let uploadResult = $("#uploadResult");
+		
+		//getJSON(url[,data][,success]); get 방식으로 서버로부터 json으로 인코딩된 데이터를 받을때 사용
+		$.getJSON("/getImageList", {itemId : itemId},function(arr){
+				
+				if(arr.length === 0){	
+					let str = "";
+					str += "<div id='result_card'>";
+					str += "<img src='/resources/img/noimg.JPG'>";
+					str += "</div>";
+					
+					uploadResult.html(str);	
+					
+					return;
+				}	
+				
+				let str = "";
+				let obj = arr[0];
+				
+				let filePath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+				str += "<div id='result_card'";
+				str += "data-path='" + obj.uploadPath + "' data-uuid='" + obj.uuid + "' data-filename='" + obj.fileName + "'";
+				str += ">";
+				str += "<img src='/displayImg?fileName=" + filePath +"'>";
+				str += "<div class='imgDeleteBtn' data-file='" + filePath + "'>x</div>";
+				str += "<input type='hidden' name='imageList[0].fileName' value='"+ obj.fileName +"'>"; //기존에 저장되어있는 이미지 정보
+				str += "<input type='hidden' name='imageList[0].uuid' value='"+ obj.uuid +"'>";
+				str += "<input type='hidden' name='imageList[0].uploadPath' value='"+ obj.uploadPath +"'>";
+				str += "</div>";	
+				
+				uploadResult.html(str);
+		});
+		
+		
+		/* 파일 삭제 메서드 */
+		function deleteFile(){
+			
+			$("#result_card").remove();
+		}
+		
+		//x버튼 클릭시 작동 
+		$("#uploadResult").on("click", ".imgDeleteBtn", function (e) {
+			
+			deleteFile();
+		
+			
+		});
+		
+		/* 이미지 업로드 */
+		$("input[type='file']").on("change", function(e){
+			
+			//이미지 존재시, 기존이미지 삭제 noimg 포함
+			if($("#result_card").length > 0){
+				deleteFile();
+			}
+			
+			let formData = new FormData();
+			let fileInput = $('input[name="uploadFile"]');
+			let fileList = fileInput[0].files; 
+			let fileObj = fileList[0];
+
+			console.log("fileObj : " + fileObj);
+			console.log("fileList : " + fileList);
+			console.log("fileName : " + fileObj.name);
+			console.log("fileSize : " + fileObj.size);
+			console.log("fileType(MimeType) : " + fileObj.type);
+			
+	 		if(!fileCheck(fileObj.name, fileObj.size)){ //filecheck 함수에서 false값이 반환되면 !로 인해 true가 된다.
+				return false;
+			} 
+			
+			formData.append("uploadFile", fileObj);
+			
+			$.ajax({
+				url: '/admin/imgUpload',
+		    	processData : false, // 서버로 전송할 데이터를 queryStirng 형태로 변환할지 여부
+		    	contentType : false, // 서버로 전송되는 데이터의 content-type
+		    	data : formData, //서버로 전송할 데이터
+		    	type : 'POST', //서버 요청 타입(GET, POST)
+		    	dataType : 'json', //서버로부터 반환받을 데이터 타입
+		    	success : function (result) {
+		    		console.log(result);
+		    		showUploadImg(result);
+					
+				},
+				error : function (result) {
+					alert("이미지 파일이 아닙니다.");
+				}
+			});	
+		
+		});
+		
+		let regex = new RegExp("(.*?)\.(jpg|png)$");  //jpg,png만 허영되게 선언
+		let maxSize = 1048576; //1MB 
+		
+		function fileCheck(fileName, fileSize){  //파일 이름과 사이즈를 파라미터로 받고
+
+			if(fileSize >= maxSize){  //max사이즈 보다 크면 경고문
+				alert("파일 사이즈 초과");
+				return false;
+			}
+				  
+			if(!regex.test(fileName)){ //jpg,png가 아닐시 경고문
+				alert("해당 종류의 파일은 업로드할 수 없습니다.");
+				return false;
+			}
+			
+			return true;		
+			
+		}
+		
+		//이미지 출력
+		function showUploadImg(uploadResultArr){
+			//전달받은 데이터 검증
+			if(!uploadResultArr || uploadResultArr.length == 0){return}
+			
+			let uploadResult = $("#uploadResult");
+			
+			let obj = uploadResultArr[0];
+			
+			let str = "";
+			// encodeURIComponent를 이용해 인코딩 , \\를 /로 변경하기위해 replace 사용
+			let filePath = encodeURIComponent(obj.uploadPath.replace(/\\/g, '/') + "/s_" + obj.uuid + "_" + obj.fileName);
+			
+			
+			str += "<div id='result_card'>";
+			str += "<img src='/displayImg?fileName=" + filePath +"'>";
+			str += "<div class='imgDeleteBtn 'data-file=' "+ filePath +"' >x</div>";
+			str += "<input type='hidden' name='imageList[0].fileName' value='"+ obj.fileName +"'>";
+			str += "<input type='hidden' name='imageList[0].uuid' value='"+ obj.uuid +"'>";
+			str += "<input type='hidden' name='imageList[0].uploadPath' value='"+ obj.uploadPath +"'>";
+			str += "</div>";
+			
+			uploadResult.append(str);
+		}
+		
+		
 		/* 물품 소개 */
 		ClassicEditor
 			.create(document.querySelector('#itemIntro_textarea'))

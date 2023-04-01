@@ -15,6 +15,37 @@
   crossorigin="anonymous"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>  <!--위지웍 에디터 사용  -->
 
+
+<style type="text/css">
+	#result_card img{
+		max-width: 100%;
+	    height: auto;
+	    display: block;
+	    padding: 5px;
+	    margin-top: 10px;
+	    margin: auto;	
+	}
+	#result_card {
+		position: relative;
+	}
+	.imgDeleteBtn{
+	    position: absolute;
+	    top: 0;
+	    right: 5%;
+	    background-color: #ef7d7d;
+	    color: wheat;
+	    font-weight: 900;
+	    width: 30px;
+	    height: 30px;
+	    border-radius: 50%;
+	    line-height: 26px;
+	    text-align: center;
+	    border: none;
+	    display: block;
+	    cursor: pointer;	
+	}
+	
+</style>
 </head>
 </head>
 <body>
@@ -138,6 +169,20 @@
                     				<span class="ck_warn itemContents_warn">물품 목차를 입력해주세요.</span>
                     			</div>
                     		</div>
+                    		<div class="form_section">
+                    			<div class="form_section_title">
+                    				<label>상품 이미지</label>
+                    			</div>
+                    			<div class="form_section_content">
+									<input type="file" id ="fileItem" name='uploadFile' style="height: 30px;">
+									<div id="uploadResult">
+								<!-- 	<div id="result_card">
+										<div class="imgDeleteBtn">x</div>
+										<img src="/displayImg?fileName=logo.png">
+										</div> -->
+									</div>
+                    			</div>
+                    		</div>  
                    		</form>
                    			<div class="btn_section">
                    				<button id="cancelBtn" class="btn">취 소</button>
@@ -319,6 +364,10 @@ $(document).ready(function(){
 	cateArray(cate1Obj,cate1Array,cateList,1);
 	cateArray(cate2Obj,cate2Array,cateList,2);
 	cateArray(cate3Obj,cate3Array,cateList,3);
+	//대분류 추가 
+	for(let i = 0; i < cate1Array.length; i++){
+	cateSelect1.append("<option value='"+cate1Array[i].cateCode+"'>" + cate1Array[i].cateName + "</option>");
+	}
 	
 	//중분류 추가
 	$(cateSelect1).on("change",function(){
@@ -388,6 +437,127 @@ $(document).ready(function(){
 		
 	});
 	
+	/* 이미지 업로드 */
+	$("input[type='file']").on("change", function(e){
+		
+		//이미지 존재시, 기존이미지 삭제
+		if($(".imgDeleteBtn").length > 0 ){
+			deleteFile();
+		}
+		
+		let formData = new FormData();
+		let fileInput = $('input[name="uploadFile"]');
+		let fileList = fileInput[0].files; 
+		let fileObj = fileList[0];
+
+		console.log("fileObj : " + fileObj);
+		console.log("fileList : " + fileList);
+		console.log("fileName : " + fileObj.name);
+		console.log("fileSize : " + fileObj.size);
+		console.log("fileType(MimeType) : " + fileObj.type);
+		
+ 		if(!fileCheck(fileObj.name, fileObj.size)){ //filecheck 함수에서 false값이 반환되면 !로 인해 true가 된다.
+			return false;
+		} 
+		
+		formData.append("uploadFile", fileObj);
+		
+		$.ajax({
+			url: '/admin/imgUpload',
+	    	processData : false, // 서버로 전송할 데이터를 queryStirng 형태로 변환할지 여부
+	    	contentType : false, // 서버로 전송되는 데이터의 content-type
+	    	data : formData, //서버로 전송할 데이터
+	    	type : 'POST', //서버 요청 타입(GET, POST)
+	    	dataType : 'json', //서버로부터 반환받을 데이터 타입
+	    	success : function (result) {
+	    		console.log(result);
+	    		showUploadImg(result);
+				
+			},
+			error : function (result) {
+				alert("이미지 파일이 아닙니다.");
+			}
+		});	
+	
+	});
+	
+	let regex = new RegExp("(.*?)\.(jpg|png)$");  //jpg,png만 허영되게 선언
+	let maxSize = 1048576; //1MB 
+	
+	function fileCheck(fileName, fileSize){  //파일 이름과 사이즈를 파라미터로 받고
+
+		if(fileSize >= maxSize){  //max사이즈 보다 크면 경고문
+			alert("파일 사이즈 초과");
+			return false;
+		}
+			  
+		if(!regex.test(fileName)){ //jpg,png가 아닐시 경고문
+			alert("해당 종류의 파일은 업로드할 수 없습니다.");
+			return false;
+		}
+		
+		return true;		
+		
+	}
+	
+	//이미지 출력
+	function showUploadImg(uploadResultArr){
+		//전달받은 데이터 검증
+		if(!uploadResultArr || uploadResultArr.length == 0){return}
+		
+		let uploadResult = $("#uploadResult");
+		
+		let obj = uploadResultArr[0];
+		
+		let str = "";
+		// encodeURIComponent를 이용해 인코딩 , \\를 /로 변경하기위해 replace 사용
+		let filePath = encodeURIComponent(obj.uploadPath.replace(/\\/g, '/') + "/s_" + obj.uuid + "_" + obj.fileName);
+		
+		
+		str += "<div id='result_card'>";
+		str += "<img src='/displayImg?fileName=" + filePath +"'>";
+		str += "<div class='imgDeleteBtn 'data-file=' "+ filePath +"' >x</div>";
+		str += "<input type='hidden' name='imageList[0].fileName' value='"+ obj.fileName +"'>";
+		str += "<input type='hidden' name='imageList[0].uuid' value='"+ obj.uuid +"'>";
+		str += "<input type='hidden' name='imageList[0].uploadPath' value='"+ obj.uploadPath +"'>";
+		str += "</div>";
+		
+		uploadResult.append(str);
+	}
+	
+	/* 파일 삭제 메서드 */
+	function deleteFile(){
+		
+		let targetFile = $(".imgDeleteBtn").data("file");
+		
+		let targetDiv = $("#result_card");
+		
+		$.ajax({
+			url: '/admin/deleteFile',
+			data : {fileName : targetFile},
+			dataType : 'text',
+			type : 'POST',
+			success : function(result){
+				console.log(result);
+				
+				targetDiv.remove();  //파일이 삭제 되었을 경우 input 태그 초기화 
+				$("input[type='file']").val("");
+			},
+			error : function(result){
+				console.log(result);
+				
+				alert("파일을 삭제하지 못하였습니다.")
+			}
+	});
+	}
+	
+	//x버튼 클릭시 작동 
+	$("#uploadResult").on("click", ".imgDeleteBtn", function (e) {
+		
+		deleteFile();
+	
+		
+	});
 
 </script> 	
  

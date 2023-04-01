@@ -1,6 +1,7 @@
 package com.mino.domain;
 
 import java.util.Date;
+import java.util.List;
 
 public class ItemVO {
 	/* 상품 id */
@@ -35,6 +36,17 @@ public class ItemVO {
 	
 	/* 수정 날짜 */
 	private Date updateDate;
+	
+	/* 이미지 */  //이미지 테이블 추가시 수정
+	private List<ImageVO> imageList;
+
+	public List<ImageVO> getImageList() {
+		return imageList;
+	}
+
+	public void setImageList(List<ImageVO> imageList) {
+		this.imageList = imageList;
+	}
 
 	public int getItemId() {
 		return itemId;
@@ -129,8 +141,9 @@ public class ItemVO {
 		return "ItemVO [itemId=" + itemId + ", itemName=" + itemName + ", cateCode=" + cateCode + ", cateName="
 				+ cateName + ", itemPrice=" + itemPrice + ", itemStock=" + itemStock + ", itemDiscount=" + itemDiscount
 				+ ", itemIntro=" + itemIntro + ", itemContents=" + itemContents + ", regDate=" + regDate
-				+ ", updateDate=" + updateDate + "]";
+				+ ", updateDate=" + updateDate + ", imageList=" + imageList + "]";
 	}
-	
+
+
 	
 }

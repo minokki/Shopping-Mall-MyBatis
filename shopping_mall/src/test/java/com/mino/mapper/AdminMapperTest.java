@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.mino.domain.ImageVO;
 import com.mino.domain.ItemVO;
-import com.mino.domain.Paging;
 
 import lombok.extern.log4j.Log4j;
 
@@ -87,11 +87,53 @@ public class AdminMapperTest {
 //		
 //	}
 	
+//	@Test
+//	public void shopDeleteTest() {
+//		int item = 10;
+//		
+//		adminMapper.shopDelete(item);
+//		
+//	}
+	
+//	@Test
+//	public void imgInsertTest() {
+//
+//			
+//			ImageVO img = new ImageVO();
+//			
+//			img.setItemId(11);
+//			img.setFileName("test");
+//			img.setUploadPath("test");
+//			img.setUuid("test2");
+//			
+//			adminMapper.imgInsert(img);
+//			
+//		
+//	}
+	
+//	@Test
+//	public void deleteImageAllTest() {
+//		
+//		int item = 519;
+//		adminMapper.deleteImageAll(item);
+//	}
+	
+//	@Test
+//	public void checkImageListTest() {
+//		
+//		adminMapper.checkFileList();
+//	}
+	
+	
+	/* 지정 상품 이미지 정보 얻기 */
 	@Test
-	public void shopDeleteTest() {
-		int item = 10;
+	public void getAttachInfoTest() {
 		
-		adminMapper.shopDelete(item);
+		int itemId = 520;
+		
+		List<ImageVO> list = adminMapper.getImageInfo(itemId);
+		
+		System.out.println("list : " + list);
 		
 	}
 	
