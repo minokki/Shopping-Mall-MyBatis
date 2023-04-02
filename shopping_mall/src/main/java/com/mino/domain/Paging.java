@@ -14,6 +14,9 @@ public class Paging {
     /* 검색 타입 */
     private String type;
     
+    /* 카테고리 코드 */
+	private String cateCode;
+    
     /* 검색 키워드 */
     private String keyword;
     
@@ -76,6 +79,21 @@ public class Paging {
 		this.keyword = keyword;
 	}
 
+	public String getCateCode() {
+		return cateCode;
+	}
+
+	public void setCateCode(String cateCode) {
+		this.cateCode = cateCode;
+	}
+
+	@Override
+	public String toString() {
+		return "Paging [pageNum=" + pageNum + ", amount=" + amount + ", skip=" + skip + ", type=" + type + ", cateCode="
+				+ cateCode + ", keyword=" + keyword + "]";
+	}
+	
+	
 
     
 }

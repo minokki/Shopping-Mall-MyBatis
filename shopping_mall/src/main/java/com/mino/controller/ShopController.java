@@ -11,12 +11,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.mino.domain.ImageVO;
+import com.mino.domain.ItemVO;
+import com.mino.domain.PageDTO;
+import com.mino.domain.Paging;
 import com.mino.service.ImageService;
+import com.mino.service.ItemService;
 
 import lombok.extern.log4j.Log4j;
 
@@ -27,6 +33,9 @@ public class ShopController {
 	@Autowired
 	private ImageService imageService;
 	
+	@Autowired 
+	private ItemService itemService;
+	
 	@RequestMapping("/")
 	public String mainPage() {
 		
@@ -36,7 +45,7 @@ public class ShopController {
 		
 	}
 	
-	@GetMapping("displayImg")
+	@GetMapping("/displayImg")
 	public ResponseEntity<byte[]> imageGet(String fileName) {
 		
 		log.info("이미지 이름=" +fileName);
@@ -65,5 +74,39 @@ public class ShopController {
 		return new ResponseEntity(imageService.getImageList(itemId), HttpStatus.OK);
 		
 	}
+	
+	@GetMapping("/search")
+	public String searchItem(Paging page, Model model) {
+		System.out.println("search 진입");
+		
+		List<ItemVO> list = itemService.itemList(page);
+		
+		if(!list.isEmpty()) {
+			
+			model.addAttribute("list", list);
+			log.info("list : " + list);
+			
+		} else {
+			model.addAttribute("listcheck", "empty");
+			
+			return "search";
+		}
+		
+		model.addAttribute("pageMaker", new PageDTO(page, itemService.itemTotal(page)));
+		
+		
+		return "search";
+	}
+	
+	/* 상품 상세 */
+	@GetMapping("/itemView/{itemId}")
+	public String goodsDetailGET(@PathVariable("itemId")int itemId, Model model) {
+		
+		log.info("itemView()..........");
+		model.addAttribute("itemInfo", itemService.itemInfo(itemId));
+		
+		return "/itemView";
+	}
+	
 
 }
