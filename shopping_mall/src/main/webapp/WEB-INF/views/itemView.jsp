@@ -41,7 +41,7 @@
                     마이룸
                 </li>
                  <li>
-                    장바구니
+                    <a href="/cart/${member.memberId}">장바구니</a>
                 </li>
                  </c:if>
                 <li>
@@ -109,16 +109,21 @@
 							판매가 : <span class="discount_price_number"><fmt:formatNumber value="${itemInfo.itemPrice - (itemInfo.itemPrice*itemInfo.itemDiscount)}" pattern="#,### 원" /></span> 
 							[<fmt:formatNumber value="${itemInfo.itemDiscount*100}" pattern="###" />% 
 							<fmt:formatNumber value="${itemInfo.itemPrice*itemInfo.itemDiscount}" pattern="#,### 원" /> 할인]</div>							
+					
+						<div>
+							적립 포인트 : <span class="point_span"></span>원
+						</div>
+					
 					</div>			
 					<div class="line">
 					</div>	
 					<div class="button">						
 						<div class="button_quantity">
 							주문수량
-							<input type="text" value="1">
+							<input type="text" class="quantity_input" value="1">
 							<span>
-								<button>+</button>
-								<button>-</button>
+								<button class="plus_btn">+</button>
+								<button class="minus_btn">-</button>
 							</span>
 						</div>
 						<div class="button_set">
@@ -203,9 +208,57 @@ $(document).ready(function(){
 	} else {
 		bobj.find("img").attr('src', '/resources/img/noimg.JPG');
 	}
-
+	//포인트
+	let salePrice = "${itemInfo.itemPrice - (itemInfo.itemPrice * itemInfo.itemDiscount)}"
+	let point = salePrice * 0.05;
+	point = Math.floor(point); //소수점 나머지 버리도록
+	$(".point_span").text(point);
 	
 });	
+
+
+
+let quantity = $(".quantity_input").val();
+$(".plus_btn").on("click",function (){
+	$(".quantity_input").val(++quantity);
+});
+$(".minus_btn").on("click",function (){
+	if(quantity >1){
+	$(".quantity_input").val(--quantity);
+	}
+});
+
+//서버로 전송할 데이터
+const form = {
+		memberId : '${member.memberId}',
+		itemId : '${itemInfo.itemId}',
+		itemCount : ''
+}
+
+// 장바구니 추가 버튼
+$(".btn_cart").on("click",function(e){
+	form.itemCount = $(".quantity_input").val();
+	$.ajax({
+		url:'/cart/add',
+		type:'post',
+		data:form,
+		success: function (result) {
+			if(result == '0'){
+				alert("장바구니에 추가를 하지 못하였습니다.");
+			} else if(result == '1'){
+				alert("장바구니에 추가되었습니다.");
+			} else if(result == '2'){
+				alert("장바구니에 이미 추가되어져 있습니다.");
+			} else if(result == '5'){
+				alert("로그인이 필요합니다.");	
+			}
+		}
+	})
+	
+		});
+
+
+
 </script>
 
 
