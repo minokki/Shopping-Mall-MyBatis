@@ -12,5 +12,8 @@ import com.mino.domain.MemberVO;
 		
 	//로그인
 		public MemberVO memberLogin(MemberVO memberVO) throws Exception;
+		
+	// 주문자 정보 
+		public MemberVO memberInfo(String memberId);
 
 }

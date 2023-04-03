@@ -150,6 +150,12 @@
 			</div>
 		</div>
 		
+		<!-- 주문 form -->
+			<form action="/order/${member.memberId}" method="get" class="order_form">
+				<input type="hidden" name="orders[0].itemId" value="${itemInfo.itemId}">
+				<input type="hidden" name="orders[0].itemCount" value="">
+			</form>
+			
 		 <!-- Footer 영역 -->
         <div class="footer_nav">
             <div class="footer_nav_container">
@@ -256,6 +262,14 @@ $(".btn_cart").on("click",function(e){
 	})
 	
 		});
+
+// 바로구매 버튼
+$(".btn_buy").on("click", function(){
+	let itemCount = $(".quantity_input").val();
+	$(".order_form").find("input[name='orders[0].itemCount']").val(itemCount);
+	console.log(itemCount);
+	$(".order_form").submit();
+});
 
 
 

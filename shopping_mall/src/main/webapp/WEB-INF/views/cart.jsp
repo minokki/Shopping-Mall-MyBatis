@@ -132,6 +132,7 @@
 									<input type="hidden" class="individual_totalPrice_input" value="${ci.salePrice * ci.itemCount}">
 									<input type="hidden" class="individual_point_input" value="${ci.point}">
 									<input type="hidden" class="individual_totalPoint_input" value="${ci.totalPoint}">
+									<input type="hidden" class="individual_itemId_input" value="${ci.itemId}">
 								</td>
 								<td class="td_width_2">
 								<div class="image_wrap" data-itemid="${ci.imageList[0].itemId}" data-path="${ci.imageList[0].uploadPath}" data-uuid="${ci.imageList[0].uuid}" data-filename="${ci.imageList[0].fileName}">
@@ -240,7 +241,7 @@
 			</div>
 			<!-- 구매 버튼 영역 -->
 			<div class="content_btn_section">
-				<a>주문하기</a>
+				<a class="order_btn">주문하기</a>
 			</div>
 			<!-- 수량 조정 form -->
 			<form action="/cart/update" method="post" class="quantity_update_form">
@@ -254,6 +255,12 @@
 				<input type="hidden" name="cartId" id="delete_cartId">
 				<input type="hidden" name="memberId" value="${member.memberId}">
 			</form>
+			
+			<!-- 주문 form -->
+			<form action="/order/${member.memberId}" method="get" class="order_form">
+
+			</form>
+			
 		
 		</div>
 		 <!-- Footer 영역 -->
@@ -433,6 +440,36 @@ $(".individual_cart_checkbox").on("change", function(){ //체크박스 변환에
      $("#delete_cartId").val(cartId); 
      $(".quantity_delete_form").submit();
 });
+	
+	/* 주문 페이지 이동 */	
+	$(".order_btn").on("click", function(){
+		
+		let form_contents ='';  //문자열 초기화
+		let orderNumber = 0; 
+		
+		$(".cart_info_td").each(function(index, element){
+			
+			if($(element).find(".individual_cart_checkbox").is(":checked") === true){	//체크여부
+				
+				let itemId = $(element).find(".individual_itemId_input").val();
+				let itemCount = $(element).find(".individual_itemCount_input").val();
+				
+				let itemId_input = "<input name='orders[" + orderNumber + "].itemId' type='hidden' value='" + itemId + "'>";
+				form_contents += itemId_input;
+				
+				let itemCount_input = "<input name='orders[" + orderNumber + "].itemCount' type='hidden' value='" + itemCount + "'>";
+				form_contents += itemCount_input;
+				
+				orderNumber += 1;
+				
+			}
+		});	
+
+		$(".order_form").html(form_contents);
+		$(".order_form").submit();
+		
+	});
+	
 </script>
 
 </body>
