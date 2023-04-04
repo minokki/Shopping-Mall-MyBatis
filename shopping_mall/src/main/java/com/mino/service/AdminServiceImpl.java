@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mino.domain.CateVO;
 import com.mino.domain.ImageVO;
 import com.mino.domain.ItemVO;
+import com.mino.domain.OrderSuccessDTO;
 import com.mino.domain.Paging;
 import com.mino.mapper.AdminMapper;
 
@@ -100,6 +101,17 @@ public class AdminServiceImpl implements AdminService{
 	public List<ImageVO> getImageInfo(int itemId) {
 		
 		return adminMapper.getImageInfo(itemId);
+	}
+
+	@Override
+	public List<OrderSuccessDTO> getOrderList(Paging page) {
+		return adminMapper.getOrderList(page);
+	}
+
+	@Override
+	public int getOrderTotal(Paging page) {
+		
+		return adminMapper.getOrderTotal(page);
 	}
 
 

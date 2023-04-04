@@ -50,38 +50,7 @@
 </head>
 <body>
  
-    <div class="wrapper">
-        <div class="wrap">
-            <!-- gnv_area -->    
-            <div class="top_gnb_area">
-                <ul class="list">    
-                    <li><a href="/">메인 페이지</a></li>
-                    <li><a href="/member/logout">로그아웃</a></li>
-                    <li>고객센터</li>            
-                </ul>
-            </div>
-            <!-- top_subject_area -->
-            <div class="admin_top_wrap">
-                <span>관리자 페이지</span>
-                
-            </div>
-            <!-- contents-area -->
-            <div class="admin_wrap">
-                <!-- 네비영역 -->
-                <div class="admin_navi_wrap">
-                  <ul>
-                      <li >
-                          <a class="admin_list_01" href="/admin/shopManage">상품 등록</a>
-                      </li>
-                      <li>
-                          <a class="admin_list_02" href="/admin/shopList">상품 관리</a>
-                      </li>
-             
-                      <lI>
-                          <a class="admin_list_05">회원 관리</a>                            
-                      </lI>                                                                                             
-                  </ul>
-                </div>
+   <%@include file="../includes/admin/header.jsp" %>
                 <div class="admin_content_wrap">
                     <div class="admin_content_subject"><span>상품 등록</span></div>
                       <div class="admin_content_main">
@@ -160,15 +129,7 @@
                     				<span class="ck_warn itemIntro_warn">물품 소개를 입력해주세요.</span>
                     			</div>
                     		</div>        		
-                    		<div class="form_section">
-                    			<div class="form_section_title">
-                    				<label>물품 목차</label>
-                    			</div>
-                    			<div class="form_section_content itemcon" >
-                    				<textarea name="itemContents" id="itemContents_textarea"></textarea>
-                    				<span class="ck_warn itemContents_warn">물품 목차를 입력해주세요.</span>
-                    			</div>
-                    		</div>
+                    		
                     		<div class="form_section">
                     			<div class="form_section_title">
                     				<label>상품 이미지</label>
@@ -216,8 +177,7 @@ $("#enrollBtn").on("click",function(e){
 	let priceCk = false;
 	let stockCk = false;
 	let discountCk = false;
-	let introCk = false;
-	let contentsCk = false;		
+	let introCk = false;		
 	
 	
 	/* input태그 변수 선언  */
@@ -227,7 +187,6 @@ $("#enrollBtn").on("click",function(e){
 	let itemStock = $("input[name='itemStock']").val();
 	let itemDiscount = $("#discount_interface").val();
 	let itemIntro = $(".itemint p").html();
-	let itemContents = $(".itemcon p").html();
 	/* 유효성  */
 	if(itemName){
 		$(".itemName_warn").css('display','none');
@@ -277,14 +236,8 @@ $("#enrollBtn").on("click",function(e){
 		introCk = false;
 	}	
 	
-	if(itemContents != '<br data-cke-filler="true">'){
-		$(".itemContents_warn").css('display','none');
-		contentsCk = true;
-	} else {
-		$(".itemContents_warn").css('display','block');
-		contentsCk = false;
-	}		
-	if(itemNameCk &&cateCodeCk && priceCk && stockCk && discountCk && introCk && contentsCk ){
+	
+	if(itemNameCk &&cateCodeCk && priceCk && stockCk && discountCk && introCk ){
 		alert('등록완료');
 		enrollForm.submit();
 	} else {
@@ -320,12 +273,6 @@ ClassicEditor
 		console.error(error);
 	});
 	
-/* 물품 목차 */	
-ClassicEditor
-.create(document.querySelector('#itemContents_textarea'))
-.catch(error=>{
-	console.error(error);
-});
 //카테고리 리스트 확인
 $(document).ready(function(){
 	console.log('${cateList}');

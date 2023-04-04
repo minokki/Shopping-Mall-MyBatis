@@ -45,4 +45,11 @@
 	
 	</select>
 	
+		<!-- 장바구니 제거 -->
+	<delete id="deleteOrderCart">
+	
+		delete from shop_cart where memberId = #{memberId} and itemId = #{itemId}
+	
+	</delete>
+	
   </mapper>

@@ -8,8 +8,11 @@
 <meta charset="UTF-8">
 <title>Welcome BookMall</title>
 <link rel="stylesheet" href="resources/css/index.css?after">
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
 <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-</head>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
 <body>
 
 <div class="wrapper">
@@ -32,18 +35,13 @@
                         <li><a href="/admin/main">관리자 페이지</a></li>
                     </c:if>
                 <li >
-                    <a id="gnb_logout_button">로그아웃</a>
-                </li>
-                <li>
-                    마이룸
+                    <a href="" id="gnb_logout_button">로그아웃</a>
                 </li>
                  <li>
                    <a href="/cart/${member.memberId}">장바구니</a>
                 </li>
                  </c:if>
-                <li>
-                    고객센터
-                </li>            
+                        
             </ul>    
 		</div>
 		<div class="top_area">
@@ -66,12 +64,7 @@
 			</div>
 			<div class="login_area">
 			
-				<!-- 로그인 안한 상태 -->
-				<c:if test="${member == null}">
-				<div class="login_button"><a href="/member/login">로그인</a></div>
-				<span><a href="/member/sign">회원가입</a></span>
-				</c:if>
-				
+		
 				<!-- 로그인한 상태 -->
 				<c:if test="${member != null}">
 				<div class="login_success_area">
@@ -133,52 +126,55 @@
 		</div>		
 		</div>
 		<div class="content_area">
-			
-			
+			<div class="slide_div_wrap">
+				<div class="slide_div">
+					<div>
+						<a>
+							<img src="../resources/img/1.jpg">
+						</a>
+					</div>
+					<div>
+						<a>
+							<img src="../resources/img/2.jpg">
+						</a>
+					</div>
+					<div>
+						<a>
+							<img src="../resources/img/3.jpg">
+						</a>
+					</div>				
+				</div>	
+			</div>
+			<div class= shop>
+		
+		<h1> 쇼핑몰 메인페이지 </h1>
+		
+		</div>
 		</div>
 		
 		 <!-- Footer 영역 -->
         <div class="footer_nav">
             <div class="footer_nav_container">
-                <ul>
-                    <li>회사소개</li>
-                    <span class="line">|</span>
-                    <li>이용약관</li>
-                    <span class="line">|</span>
-                    <li>고객센터</li>
-                    <span class="line">|</span>
-                    <li>광고문의</li>
-                    <span class="line">|</span>
-                    <li>채용정보</li>
-                    <span class="line">|</span>
-                </ul>
+               COPYRIGHT(C) SHOP ALL RIGHTS RESERVED.
             </div>
         </div> <!-- class="footer_nav" -->
         
-        <div class="footer">
-            <div class="footer_container">
-                
-                <div class="footer_left">
-                    <img src="resources/img/logo.png">
-                </div>
-                <div class="footer_right">
-                    (주) VamBook    대표이사 : OOO
-                    <br>
-                    사업자등록번호 : ooo-oo-ooooo
-                    <br>
-                    대표전화 : oooo-oooo(발신자 부담전화)
-                    <br>
-                    <br>
-                    COPYRIGHT(C) <strong>kimvampa.tistory.com</strong>    ALL RIGHTS RESERVED.
-                </div>
-                <div class="clearfix"></div>
-            </div>
-        </div> <!-- class="footer" -->    
+         
 	</div>
 </div>
 
 
 <script>
+$(document).ready(function(){
+	$(".slide_div").slick(
+			{
+				dots: true,
+				autoplay : true,
+				autoplaySpeed: 5000
+			}
+	);
+});
+
 	$("#gnb_logout_button").click(function () {
 		
 		$.ajax({
@@ -189,7 +185,7 @@
 				document.location.reload(); //로그아웃하면 새로고침 되도록, 세션 변경사항이 화면에 반영
 			}
 			
-		})
+		});
 	});
 </script>
 </body>

@@ -14,7 +14,6 @@
                 <ul class="list">    
                     <li><a href="/">메인 페이지</a></li>
                     <li><a href="/member/logout">로그아웃</a></li>
-                    <li>고객센터</li>            
                 </ul>
             </div>
             <!-- top_subject_area -->
@@ -33,10 +32,10 @@
                   </li>
                   <li>
                       <a class="admin_list_02" href="/admin/shopList">상품 관리</a>
-                  </li>
-                  <lI>
-                      <a class="admin_list_05">회원 관리</a>                            
-                  </lI>                                                                                             
+                  </li>       
+                  <li>
+	                      <a class="admin_list_06" href="/admin/orderList">주문 현황</a>                            
+	               </li>                                                                                           
               </ul>
 <!-- 
                     <div class="admin_list_01">

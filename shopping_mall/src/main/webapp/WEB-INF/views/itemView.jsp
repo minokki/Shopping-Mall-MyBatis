@@ -35,18 +35,14 @@
                         <li><a href="/admin/main">관리자 페이지</a></li>
                     </c:if>
                 <li >
-                    <a id="gnb_logout_button">로그아웃</a>
+                    <a href="" id="gnb_logout_button">로그아웃</a>
                 </li>
-                <li>
-                    마이룸
-                </li>
+           
                  <li>
                     <a href="/cart/${member.memberId}">장바구니</a>
                 </li>
                  </c:if>
-                <li>
-                    고객센터
-                </li>            
+                   
             </ul>    
 		</div>
 		<div class="top_area">
@@ -65,12 +61,7 @@
 			</div>
 			<div class="login_area">
 			
-				<!-- 로그인 안한 상태 -->
-				<c:if test="${member == null}">
-				<div class="login_button"><a href="/member/login">로그인</a></div>
-				<span><a href="/member/sign">회원가입</a></span>
-				</c:if>
-				
+			
 				<!-- 로그인한 상태 -->
 				<c:if test="${member != null}">
 				<div class="login_success_area">
@@ -83,7 +74,54 @@
 			</div>
 			<div class="clearfix"></div>			
 		</div>
+		<div class="navi_bar_area">
+			<div class="navi_bar_area">
+			<div class="dropdown">
+			    <button class="dropbtn">상의 
+			      <i class="fa fa-caret-down"></i>
+			    </button>
+			    <div class="dropdown-content">
+			    	<a href="/search?type=C&cateCode=101001">반팔</a>
+			    	<a href="/search?type=C&cateCode=101002">니트</a>
+			    	<a href="/search?type=C&cateCode=101003">후드</a>    		      		      
+			    </div>			
+			</div>
+			
+				<div class="dropdown">
+			    <button class="dropbtn">아우터 
+			      <i class="fa fa-caret-down"></i>
+			    </button>
+			    <div class="dropdown-content">
+					<a href="/search?type=C&cateCode=103001">자켓</a> 
+			    	<a href="/search?type=C&cateCode=103002">가디건</a> 
+			    	<a href="/search?type=C&cateCode=103003">코트</a>    		      		      
+			    </div>			
+			</div>
+			
+			<div class="dropdown">
+			    <button class="dropbtn">하의 
+			      <i class="fa fa-caret-down"></i>
+			    </button>
+			    <div class="dropdown-content">
+			    	<a href="/search?type=C&cateCode=102001">반바지</a> 
+			    	<a href="/search?type=C&cateCode=102002">슬렉스</a> 
+			    	<a href="/search?type=C&cateCode=102003">청바지</a>     		      		      
+			    </div>			
+			</div>
+			
+				<div class="dropdown">
+			    <button class="dropbtn">신발 
+			      <i class="fa fa-caret-down"></i>
+			    </button>
+			    <div class="dropdown-content">
+			    	<a href="/search?type=C&cateCode=104001">구두</a> 
+			    	<a href="/search?type=C&cateCode=104002">스니커즈</a> 
+			    	<a href="/search?type=C&cateCode=104003">슬리퍼</a>       		      		      
+			    </div>			
+			</div>
 		
+		</div>		
+		</div>
 		<div class="content_area">
 				<div class="line">
 			</div>			
@@ -143,11 +181,6 @@
 					${itemInfo.itemContents }
 				</div>
 			</div>
-			<div class="line">
-			</div>				
-			<div class="content_bottom">
-				리뷰
-			</div>
 		</div>
 		
 		<!-- 주문 form -->
@@ -156,43 +189,13 @@
 				<input type="hidden" name="orders[0].itemCount" value="">
 			</form>
 			
-		 <!-- Footer 영역 -->
+		  <!-- Footer 영역 -->
         <div class="footer_nav">
             <div class="footer_nav_container">
-                <ul>
-                    <li>회사소개</li>
-                    <span class="line">|</span>
-                    <li>이용약관</li>
-                    <span class="line">|</span>
-                    <li>고객센터</li>
-                    <span class="line">|</span>
-                    <li>광고문의</li>
-                    <span class="line">|</span>
-                    <li>채용정보</li>
-                    <span class="line">|</span>
-                </ul>
+               COPYRIGHT(C) SHOP ALL RIGHTS RESERVED.
             </div>
         </div> <!-- class="footer_nav" -->
         
-        <div class="footer">
-            <div class="footer_container">
-                
-                <div class="footer_left">
-                    <img src="/resources/img/logo.png">
-                </div>
-                <div class="footer_right">
-                    (주) Vamitem    대표이사 : OOO
-                    <br>
-                    사업자등록번호 : ooo-oo-ooooo
-                    <br>
-                    대표전화 : oooo-oooo(발신자 부담전화)
-                    <br>
-                    <br>
-                    COPYRIGHT(C) <strong>kimvampa.tistory.com</strong>    ALL RIGHTS RESERVED.
-                </div>
-                <div class="clearfix"></div>
-            </div>
-        </div> <!-- class="footer" -->    
 	</div>
 </div>
 
@@ -261,13 +264,14 @@ $(".btn_cart").on("click",function(e){
 		}
 	})
 	
-		});
+});
 
 // 바로구매 버튼
 $(".btn_buy").on("click", function(){
 	let itemCount = $(".quantity_input").val();
 	$(".order_form").find("input[name='orders[0].itemCount']").val(itemCount);
 	console.log(itemCount);
+
 	$(".order_form").submit();
 });
 

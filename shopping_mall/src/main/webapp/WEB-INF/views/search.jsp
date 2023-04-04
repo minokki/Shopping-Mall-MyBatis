@@ -35,18 +35,14 @@
                         <li><a href="/admin/main">관리자 페이지</a></li>
                     </c:if>
                 <li >
-                    <a id="gnb_logout_button">로그아웃</a>
+                    <a href="" id="gnb_logout_button">로그아웃</a>
                 </li>
-                <li>
-                    마이룸
-                </li>
+            
                  <li>
                     <a href="/cart/${member.memberId}">장바구니</a>
                 </li>
                  </c:if>
-                <li>
-                    고객센터
-                </li>            
+                    
             </ul>    
 		</div>
 		<div class="top_area">
@@ -69,12 +65,7 @@
 			</div>
 			<div class="login_area">
 			
-				<!-- 로그인 안한 상태 -->
-				<c:if test="${member == null}">
-				<div class="login_button"><a href="/member/login">로그인</a></div>
-				<span><a href="/member/sign">회원가입</a></span>
-				</c:if>
-				
+		
 				<!-- 로그인한 상태 -->
 				<c:if test="${member != null}">
 				<div class="login_success_area">
@@ -234,43 +225,14 @@
 			</c:if>
 		</div>
 		
-		 <!-- Footer 영역 -->
+
+        
+        	 <!-- Footer 영역 -->
         <div class="footer_nav">
             <div class="footer_nav_container">
-                <ul>
-                    <li>회사소개</li>
-                    <span class="line">|</span>
-                    <li>이용약관</li>
-                    <span class="line">|</span>
-                    <li>고객센터</li>
-                    <span class="line">|</span>
-                    <li>광고문의</li>
-                    <span class="line">|</span>
-                    <li>채용정보</li>
-                    <span class="line">|</span>
-                </ul>
+               COPYRIGHT(C) SHOP ALL RIGHTS RESERVED.
             </div>
         </div> <!-- class="footer_nav" -->
-        
-        <div class="footer">
-            <div class="footer_container">
-                
-                <div class="footer_left">
-                    <img src="resources/img/logo.png">
-                </div>
-                <div class="footer_right">
-                    (주) VamBook    대표이사 : OOO
-                    <br>
-                    사업자등록번호 : ooo-oo-ooooo
-                    <br>
-                    대표전화 : oooo-oooo(발신자 부담전화)
-                    <br>
-                    <br>
-                    COPYRIGHT(C) <strong>kimvampa.tistory.com</strong>    ALL RIGHTS RESERVED.
-                </div>
-                <div class="clearfix"></div>
-            </div>
-        </div> <!-- class="footer" -->    
 	</div>
 </div>
 
@@ -316,6 +278,19 @@ $(document).ready(function(){
 	
 	
 	
+});
+
+$("#gnb_logout_button").click(function () {
+	
+	$.ajax({
+		type:"Post",
+		url:"/member/logout",
+		success:function(data){
+			alert("로그아웃");
+			document.location.reload(); //로그아웃하면 새로고침 되도록, 세션 변경사항이 화면에 반영
+		}
+		
+	});
 });
 </script>
 

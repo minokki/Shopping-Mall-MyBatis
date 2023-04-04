@@ -38,18 +38,14 @@
                         <li><a href="/admin/main">관리자 페이지</a></li>
                     </c:if>
                 <li >
-                    <a id="gnb_logout_button">로그아웃</a>
+                    <a href="" id="gnb_logout_button">로그아웃</a>
                 </li>
-                <li>
-                    마이룸
-                </li>
+      
                  <li>
                     <a href="/cart/${member.memberId}">장바구니</a>
                 </li>
                  </c:if>
-                <li>
-                    고객센터
-                </li>            
+                  
             </ul>    
 		</div>
 		<div class="top_area">
@@ -132,7 +128,12 @@
 											<tr>
 												<th>주소</th>
 												<td>
-													${memberInfo.memberAddr1} ${memberInfo.memberAddr2}<br>${memberInfo.memberAddr3}										
+													${memberInfo.memberAddr1} ${memberInfo.memberAddr2}<br>${memberInfo.memberAddr3}
+													<input class="selectAddress" value="T" type="hidden">
+													<input class="addressee_input" value="${memberInfo.memberName}" type="hidden">
+													<input class="address1_input" type="hidden" value="${memberInfo.memberAddr1}">
+													<input class="address2_input" type="hidden" value="${memberInfo.memberAddr2}">
+													<input class="address3_input" type="hidden" value="${memberInfo.memberAddr3}">										
 												</td>
 											</tr>
 										</tbody>
@@ -154,7 +155,7 @@
 							<tr>
 								<th>주소</th>
 								<td>
-									
+									<input class="selectAddress" value="F" type="hidden">
 									<input class="address1_input" readonly="readonly"> <a class="address_search_btn" onclick="execution_daum_address()">주소 찾기</a><br>
 									<input class="address2_input" readonly="readonly"><br>
 									<input class="address3_input" readonly="readonly">
@@ -200,18 +201,18 @@
 							<img>
 						</div>
 						</td>
-						<td>${ol.itemName}</td>
+						<td style="text-align: center">${ol.itemName}</td>
 						<td class="goods_table_price_td">
 							<fmt:formatNumber value="${ol.salePrice}" pattern="#,### 원" /> | 수량 ${ol.itemCount}개
 							<br><fmt:formatNumber value="${ol.totalPrice}" pattern="#,### 원" />
 							<br>[<fmt:formatNumber value="${ol.totalPoint}" pattern="#,### 원" />P]
-							<input type="hidden" class="individual_bookPrice_input" value="${ol.itemPrice}">
+							<input type="hidden" class="individual_itemPrice_input" value="${ol.itemPrice}">
 							<input type="hidden" class="individual_salePrice_input" value="${ol.salePrice}">
-							<input type="hidden" class="individual_bookCount_input" value="${ol.itemCount}">
+							<input type="hidden" class="individual_itemCount_input" value="${ol.itemCount}">
 							<input type="hidden" class="individual_totalPrice_input" value="${ol.salePrice * ol.itemCount}">
 							<input type="hidden" class="individual_point_input" value="${ol.point}">
 							<input type="hidden" class="individual_totalPoint_input" value="${ol.totalPoint}">
-							<input type="hidden" class="individual_bookId_input" value="${ol.itemId}">
+							<input type="hidden" class="individual_itemId_input" value="${ol.itemId}">
 						</td>
 					</tr>							
 				</c:forEach>
@@ -219,6 +220,19 @@
 			</tbody>
 		</table>
 	</div>
+	<!-- 주문 요청 form -->
+		<form class="order_form" action="/order" method="post">
+			<!-- 주문자 회원번호 -->
+			<input name="memberId" value="${memberInfo.memberId}" type="hidden">
+			<!-- 주소록 & 받는이-->
+			<input name="addressName" type="hidden">
+			<input name="memberAddr1" type="hidden">
+			<input name="memberAddr2" type="hidden">
+			<input name="memberAddr3" type="hidden">
+			<!-- 사용 포인트 -->
+			<input name="usePoint" type="hidden">
+			<!-- 상품 정보 -->
+		</form>
 				
 				<!-- 포인트 정보 -->
 				<div class="point_div">
@@ -283,40 +297,9 @@
 		 <!-- Footer 영역 -->
         <div class="footer_nav">
             <div class="footer_nav_container">
-                <ul>
-                    <li>회사소개</li>
-                    <span class="line">|</span>
-                    <li>이용약관</li>
-                    <span class="line">|</span>
-                    <li>고객센터</li>
-                    <span class="line">|</span>
-                    <li>광고문의</li>
-                    <span class="line">|</span>
-                    <li>채용정보</li>
-                    <span class="line">|</span>
-                </ul>
+               COPYRIGHT(C) SHOP ALL RIGHTS RESERVED.
             </div>
         </div> <!-- class="footer_nav" -->
-        
-        <div class="footer">
-            <div class="footer_container">
-                
-                <div class="footer_left">
-                    <img src="/resources/img/logo.png">
-                </div>
-                <div class="footer_right">
-                    (주) Vamitem    대표이사 : OOO
-                    <br>
-                    사업자등록번호 : ooo-oo-ooooo
-                    <br>
-                    대표전화 : oooo-oooo(발신자 부담전화)
-                    <br>
-                    <br>
-                    COPYRIGHT(C) <strong>kimvampa.tistory.com</strong>    ALL RIGHTS RESERVED.
-                </div>
-                <div class="clearfix"></div>
-            </div>
-        </div> <!-- class="footer" -->    
 	</div>
 </div>
 
@@ -341,6 +324,13 @@ function showAdress(className){
 		$(".address_btn").css('backgroundColor', '#555');
 	/* 지정 색상 변경 */
 		$(".address_btn_"+className).css('backgroundColor', '#3c3838');	
+	
+		// 모든 selectAddress F만들기 
+		$(".addressInfo_input_div").each(function(i, obj){
+			$(obj).find(".selectAddress").val("F");
+		});
+	// 선택한 selectAdress T만들기
+		$(".addressInfo_input_div_" + className).find(".selectAddress").val("T");
 }
 
 /* 다음 주소 연동 */
@@ -455,7 +445,7 @@ $(".order_point_input_btn").on("click", function(){
 			// 총 가격
 			totalPrice += parseInt($(element).find(".individual_totalPrice_input").val());
 			// 총 갯수
-			totalCount += parseInt($(element).find(".individual_bookCount_input").val());
+			totalCount += parseInt($(element).find(".individual_itemCount_input").val());
 			// 총 종류
 			totalKind += 1;
 			// 총 마일리지
@@ -511,6 +501,40 @@ $(".order_point_input_btn").on("click", function(){
 		}
 		
 	});
+	
+
+	
+		// 주문 요청 
+		$(".order_btn").on("click", function(){
+			// 주소 정보 , 받는이
+			$(".addressInfo_input_div").each(function(i, obj){
+				if($(obj).find(".selectAddress").val() === 'T'){ 
+					$("input[name='addressee']").val($(obj).find(".addressee_input").val());
+					$("input[name='memberAddr1']").val($(obj).find(".address1_input").val());
+					$("input[name='memberAddr2']").val($(obj).find(".address2_input").val());
+					$("input[name='memberAddr3']").val($(obj).find(".address3_input").val());
+				}
+	
+			});	
+			
+			// 사용 포인트
+			$("input[name='usePoint']").val($(".order_point_input").val());
+			
+			/* 상품정보 */
+			let form_contents = ''; 
+			$(".goods_table_price_td").each(function(index, element){
+				let itemId = $(element).find(".individual_itemId_input").val();
+				let itemCount = $(element).find(".individual_itemCount_input").val();
+				let itemId_input = "<input name='orders[" + index + "].itemId' type='hidden' value='" + itemId + "'>";
+				form_contents += itemId_input;
+				let itemCount_input = "<input name='orders[" + index + "].itemCount' type='hidden' value='" + itemCount + "'>";
+				form_contents += itemCount_input;
+			});	
+			$(".order_form").append(form_contents);	
+			
+			/* 서버 전송 */
+			$(".order_form").submit();	
+		});
 </script>
 
 </body>

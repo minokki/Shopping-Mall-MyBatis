@@ -113,21 +113,13 @@
                     		</div>          		
                     		<div class="form_section">
                     			<div class="form_section_title">
-                    				<label>책 소개</label>
+                    				<label>물품 소개</label>
                     			</div>
                     			<div class="form_section_content bit">
                     				<textarea name="itemIntro" id="itemIntro_textarea" disabled>${viewInfo.itemIntro}</textarea>
                     			</div>
                     		</div>        		
-                    		<div class="form_section">
-                    			<div class="form_section_title">
-                    				<label>책 목차</label>
-                    			</div>
-                    			<div class="form_section_content bct">
-                    				<textarea name="itemContents" id="itemContents_textarea" disabled>${viewInfo.itemContents}</textarea>
-                    			</div>
-                    		</div>
-                   		
+                 
                    		<div class="form_section">
                     			<div class="form_section_title">
                     				<label>상품 이미지</label>
@@ -205,16 +197,6 @@
 					console.error(error);
 				});
 				
-			/* 물품 목차 */	
-			ClassicEditor
-			.create(document.querySelector('#itemContents_textarea'))
-			.then(editor => {
-						console.log(editor);
-						editor.isReadOnly = true;
-					})
-			.catch(error=>{
-				console.error(error);
-			});		
 		
 			/* 카테고리 */
 			let cateList = JSON.parse('${cateList}');

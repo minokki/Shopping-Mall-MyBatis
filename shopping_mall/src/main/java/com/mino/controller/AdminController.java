@@ -12,6 +12,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,9 +31,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mino.domain.ImageVO;
 import com.mino.domain.ItemVO;
+import com.mino.domain.MemberVO;
+import com.mino.domain.OrderCancelDTO;
+import com.mino.domain.OrderSuccessDTO;
 import com.mino.domain.PageDTO;
 import com.mino.domain.Paging;
 import com.mino.service.AdminService;
+import com.mino.service.MemberService;
+import com.mino.service.OrderService;
 
 import lombok.extern.log4j.Log4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -42,6 +50,12 @@ public class AdminController {
 	
 	@Autowired
 	private AdminService adminService;
+	
+	@Autowired
+	private OrderService orderService;
+	
+	@Autowired
+	private MemberService memberService;
 
 	@GetMapping("/main")
 	public void adminMain() throws Exception{
@@ -210,8 +224,9 @@ public class AdminController {
 			//섬네일 저장
 			File thFile = new File(uploadPath, "s_"+uploadFileName); 
 			
+			
 			Thumbnails.of(saveFile)
-			.size(150, 150)
+			.size(170, 170)
 			.toFile(thFile); //섬네일 끝
 			
 		}catch (Exception e) {
@@ -251,5 +266,42 @@ public class AdminController {
 	  return new ResponseEntity<String>("success", HttpStatus.OK);
   }
   
+  /* 주문 현황 페이지 */
+	@GetMapping("/orderList")
+	public String orderListGET(Paging page, Model model) {
+		List<OrderSuccessDTO> list = adminService.getOrderList(page);
+		
+		if(!list.isEmpty()) {
+			model.addAttribute("list", list);
+			model.addAttribute("pageMaker", new PageDTO(page, adminService.getOrderTotal(page)));
+		} else {
+			model.addAttribute("listCheck", "empty");
+		}
+		
+		return "/admin/orderList";
+	}
+  
+	/* 주문삭제 */
+	@PostMapping("/orderCancle")
+	public String orderCanclePOST(OrderCancelDTO dto, HttpServletRequest request) {
+		
+		orderService.orderCancle(dto);
+		HttpSession session = request.getSession();
+		
+		
+		MemberVO member = new MemberVO();
+		member.setMemberId(dto.getMemberId());
+		try {
+			MemberVO memberLogin = memberService.memberLogin(member);
+			memberLogin.setMemberPw("");
+			session.setAttribute("member", memberLogin);
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		
+		return "redirect:/admin/orderList?keyword=" + dto.getKeyword() + "&amount=" + dto.getAmount() + "&pageNum=" + dto.getPageNum();
+	}
     
 }

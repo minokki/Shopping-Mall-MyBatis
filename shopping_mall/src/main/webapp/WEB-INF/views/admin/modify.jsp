@@ -93,15 +93,7 @@
                     				<span class="ck_warn itemIntro_warn">물품 소개를 입력해주세요.</span>
                     			</div>
                     		</div>        		
-                    		<div class="form_section">
-                    			<div class="form_section_title">
-                    				<label>물품 목차</label>
-                    			</div>
-                    			<div class="form_section_content bct">
-                    				<textarea name="itemContents" id="itemContents_textarea">${viewInfo.itemContents}</textarea>
-                    				<span class="ck_warn itemContents_warn">물품 목차를 입력해주세요.</span>
-                    			</div>
-                    		</div>
+                    
                     		<div class="form_section">
                     			<div class="form_section_title">
                     				<label>상품 이미지</label>
@@ -280,13 +272,7 @@
 			.catch(error=>{
 				console.error(error);
 			});
-			
-		/* 물품 목차 */	
-		ClassicEditor
-		.create(document.querySelector('#itemContents_textarea'))
-		.catch(error=>{
-			console.error(error);
-		});		
+				
 	
 		/* 카테고리 */
 		let cateList = JSON.parse('${cateList}');
@@ -525,7 +511,7 @@
 			let stockCk = false;
 			let discountCk = false;
 			let introCk = false;
-			let contentsCk = false;	
+		
 			
 		
 			/* 체크 대상 변수 */
@@ -535,7 +521,7 @@
 			let itemStock = $("input[name='itemStock']").val();
 			let itemDiscount = $("#discount_interface").val();
 			let itemIntro = $(".bit p").html();
-			let itemContents = $(".bct p").html();	
+		
 			
 			/* 공란 체크 */
 			if(itemName){
@@ -586,16 +572,10 @@
 				introCk = false;
 			}	
 			
-			if(itemContents != '<br data-cke-filler="true">'){
-				$(".itemContents_warn").css('display','none');
-				contentsCk = true;
-			} else {
-				$(".itemContents_warn").css('display','block');
-				contentsCk = false;
-			}		
+		
 			
 			/* 최종 확인 */
-			if(itemNameCk && cateCodeCk && priceCk && stockCk && discountCk && introCk && contentsCk ){
+			if(itemNameCk && cateCodeCk && priceCk && stockCk && discountCk && introCk ){
 				$("#modifyForm").submit();
 			} else {
 				return false;

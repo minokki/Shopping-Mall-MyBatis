@@ -5,6 +5,7 @@ import java.util.List;
 import com.mino.domain.CateVO;
 import com.mino.domain.ImageVO;
 import com.mino.domain.ItemVO;
+import com.mino.domain.OrderSuccessDTO;
 import com.mino.domain.Paging;
 
 public interface AdminService {
@@ -32,6 +33,9 @@ public interface AdminService {
 	//지정된 상품 이미지 정보
 	public List<ImageVO> getImageInfo(int itemId);
 	
+	//주문 상품 리스트
+	public List<OrderSuccessDTO> getOrderList(Paging page);
 
-
+	//주문 총갯수
+	public int getOrderTotal(Paging page);
 }
