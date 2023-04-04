@@ -41,6 +41,7 @@ public class OrderServiceImpl implements OrderService{
 	@Autowired
 	private CartMapper cartMapper;
 
+	//주문 정보
 	@Override
 	public List<OrderItemDTO> getGoodsInfo(List<OrderItemDTO> orders) {
 		List<OrderItemDTO> list = new ArrayList<OrderItemDTO>();		
@@ -63,6 +64,7 @@ public class OrderServiceImpl implements OrderService{
 
 }
 
+	//주문 하기
 	@Override
 	@Transactional
 	public void order(OrderSuccessDTO osd) {
@@ -134,6 +136,7 @@ public class OrderServiceImpl implements OrderService{
 	
 	}
 
+	//주문 취소
 	@Override
 	@Transactional
 	public void orderCancle(OrderCancelDTO dto) {

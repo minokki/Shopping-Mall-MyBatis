@@ -130,22 +130,22 @@
 				<div class="slide_div">
 					<div>
 						<a>
-							<img src="../resources/img/1.jpg">
+							<img src="../resources/img/배너4.jpg">
 						</a>
 					</div>
 					<div>
 						<a>
-							<img src="../resources/img/2.jpg">
+							<img src="../resources/img/배너2.jpg">
 						</a>
 					</div>
 					<div>
 						<a>
-							<img src="../resources/img/3.jpg">
+							<img src="../resources/img/배너3.jpg">
 						</a>
 					</div>				
 				</div>	
 			</div>
-			<div class= shop>
+			<div class="shop" style="text-align: center">
 		
 		<h1> 쇼핑몰 메인페이지 </h1>
 		
